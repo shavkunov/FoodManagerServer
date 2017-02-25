@@ -11,6 +11,9 @@ public class Server {
     private static final String getRecipeCommand = "/getRecipe";
     private static final String getRecipeCategoriesCommand = "/getRecipeCategories";
     private static final String getRecipeIngredientsCommand = "/getRecipeIngredients";
+    private static final String getRecipeStepsCommand = "/getRecipeSteps";
+    private static final String getRecipesByFilterCommand = "/getRecipesByFilter";
+    private static final String getUserSettings = "/getUserSettings";
 
     public Server() {}
 
@@ -20,6 +23,7 @@ public class Server {
             server.createContext(getRecipeCommand, new getRecipeHandler());
             server.createContext(getRecipeCategoriesCommand, new getRecipeCategoriesHangler());
             server.createContext(getRecipeIngredientsCommand, new getRecipeIngredientsHandler());
+            server.createContext(getRecipeStepsCommand, new getRecipeStepsHandler());
             // TODO : others contexts
             server.setExecutor(null);
             server.start();
