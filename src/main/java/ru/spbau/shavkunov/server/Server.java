@@ -29,6 +29,7 @@ public class Server {
     private static final String removeFromFavoritesCommand = "/removeFromFavorites";
     private static final String saveUserSettingsCommand = "/saveUserSettings";
     private static final String getRandomDishCommand = "/getRandomDishOfCategory";
+    private static final String isUserOwnRecipeCommand = "/ownRecipe";
 
     private static Connection connection = null;
 
@@ -63,6 +64,7 @@ public class Server {
             server.createContext(getCategoriesListCommand, new getCategoryListHandler());
             server.createContext(saveUserSettingsCommand, new saveUserSettingsHandler());
             server.createContext(getRandomDishCommand, new getRandomDishOfCategoryHandler());
+            server.createContext(isUserOwnRecipeCommand, new userOwnRecipeHandler());
 
 
             // TODO : others contexts
