@@ -1,8 +1,7 @@
-package ru.spbau.mit.foodmanager;
+package ru.spbau.shavkunov.server;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import ru.spbau.shavkunov.server.Main;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,33 +12,29 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
 
-public class getRecipesByFilterHandler implements HttpHandler {
-
+public class getUserSettingsHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
         try (InputStream inputStream = httpExchange.getRequestBody();
              ObjectInputStream input = new ObjectInputStream(inputStream)) {
-            String filter = (String) input.readObject();
-            String filterQuery = "SELECT * FROM Recipe WHERE name LIKE '" + filter + "%'";
+            String userID = (String) input.readObject();
+            String query = "SELECT user_settings FROM user_settings WHERE user_ID = '" + userID + "'";
             Connection connection = DriverManager.getConnection("jdbc:sqlite:" + Main.databaseName);
             Statement stmt = connection.createStatement();
-            ResultSet recipes = stmt.executeQuery(filterQuery);
-            ArrayList<Recipe> res = new ArrayList<>();
-            while (recipes.next()) {
-                res.add(new Recipe(recipes.getInt("ID"),
-                        recipes.getString("description"),
-                        recipes.getString("name")));
+            ResultSet rs = stmt.executeQuery(query);
+
+            String userSettings = "";
+            if (rs.next()) {
+                userSettings = rs.getString("user_settings");
             }
 
+            stmt.close();
             httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
             ObjectOutputStream output = new ObjectOutputStream(httpExchange.getResponseBody());
-            output.writeObject(res);
+            output.writeObject(userSettings);
             output.flush();
             output.close();
-
-            System.out.println("Sent filter results");
         } catch (Exception e) {
             e.printStackTrace();
         }

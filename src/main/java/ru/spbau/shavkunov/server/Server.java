@@ -1,7 +1,6 @@
 package ru.spbau.shavkunov.server;
 
 import com.sun.net.httpserver.HttpServer;
-import ru.spbau.mit.foodmanager.getRecipesByFilterHandler;
 
 import java.net.InetSocketAddress;
 
@@ -26,6 +25,7 @@ public class Server {
             server.createContext(getRecipeIngredientsCommand, new getRecipeIngredientsHandler());
             server.createContext(getRecipeStepsCommand, new getRecipeStepsHandler());
             server.createContext(getRecipesByFilterCommand, new getRecipesByFilterHandler());
+            server.createContext(getUserSettings, new getUserSettingsHandler());
             // TODO : others contexts
             server.setExecutor(null);
             server.start();
