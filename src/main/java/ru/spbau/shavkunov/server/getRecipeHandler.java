@@ -8,13 +8,14 @@ import java.net.HttpURLConnection;
 import java.sql.*;
 
 public class getRecipeHandler implements HttpHandler {
-
+    @Override
     public void handle(HttpExchange httpExchange) throws IOException {
         try (InputStream input = httpExchange.getRequestBody()) {
             ObjectInputStream reader = new ObjectInputStream(input);
 
             int recipeID = reader.readInt();
             String recipeQuery = "SELECT name, description FROM Recipe WHERE ID = " + recipeID;
+            System.out.println("Sending recipe with recipeID = " + recipeID);
             try {
                 Connection connection = DriverManager.getConnection("jdbc:sqlite:" + Main.databaseName);
                 Statement stmt = connection.createStatement();
@@ -28,12 +29,11 @@ public class getRecipeHandler implements HttpHandler {
                 }
                 stmt.close();
 
-                Recipe recipe = new Recipe(recipeID, recipeDescription, recipeName);
-
                 httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(httpExchange.getResponseBody())
                 ) {
-                    objectOutputStream.writeObject(recipe);
+                    objectOutputStream.writeObject(recipeDescription);
+                    objectOutputStream.writeObject(recipeName);
                     objectOutputStream.flush();
                 } catch (Exception e) {
                     e.printStackTrace();
