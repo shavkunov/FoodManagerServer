@@ -24,6 +24,8 @@ public class Server {
     private static final String getCategoryByIDCommand = "/getCategoryByID";
     private static final String setUserLikeCommand = "/setLike";
     private static final String setUserNotLikeCommand = "/setNotLike";
+    private static final String addToFavoritesCommand = "/addToFavorites";
+    private static final String removeFromFavoritesCommand = "/removeFromFavorites";
 
     private static Connection connection = null;
 
@@ -50,6 +52,10 @@ public class Server {
             server.createContext(getRecipeLikesCommand, new getRecipeLikesHandler());
             server.createContext(setUserLikeCommand, new setLikeHandler());
             server.createContext(setUserNotLikeCommand, new setNotLikeHandler());
+            server.createContext(addToFavoritesCommand, new addToFavoritesHandler());
+            server.createContext(removeFromFavoritesCommand, new removeFromFavoritesHandler());
+            server.createContext(getFavoritesCommand, new getFavoritesHandler());
+
             // TODO : others contexts
             server.setExecutor(null);
             server.start();

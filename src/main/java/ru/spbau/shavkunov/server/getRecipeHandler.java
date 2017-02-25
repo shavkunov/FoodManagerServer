@@ -10,8 +10,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 public class getRecipeHandler implements HttpHandler {
@@ -21,22 +21,9 @@ public class getRecipeHandler implements HttpHandler {
             ObjectInputStream reader = new ObjectInputStream(input);
 
             int recipeID = reader.readInt();
-            String recipeQuery = "SELECT name, description FROM Recipe WHERE ID = " + recipeID;
             System.out.println("Sending recipe with recipeID = " + recipeID);
             try {
-                Connection connection = Server.getConnection();
-                Statement stmt = connection.createStatement();
-                ResultSet mainData = stmt.executeQuery(recipeQuery);
-
-                String recipeName = null;
-                String recipeDescription = null;
-                if (mainData.next()) {
-                    recipeName = mainData.getString("name");
-                    recipeDescription = mainData.getString("description");
-                }
-                stmt.close();
-
-                Recipe recipe = new Recipe(recipeID, recipeDescription, recipeName);
+                Recipe recipe = getRecipe(recipeID);
                 httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(httpExchange.getResponseBody())
                 ) {
@@ -51,5 +38,22 @@ public class getRecipeHandler implements HttpHandler {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static Recipe getRecipe(int recipeID) throws SQLException {
+        String recipeQuery = "SELECT name, description FROM Recipe WHERE ID = " + recipeID;
+        Connection connection = Server.getConnection();
+        Statement stmt = connection.createStatement();
+        ResultSet mainData = stmt.executeQuery(recipeQuery);
+
+        String recipeName = null;
+        String recipeDescription = null;
+        if (mainData.next()) {
+            recipeName = mainData.getString("name");
+            recipeDescription = mainData.getString("description");
+        }
+        stmt.close();
+
+        return new Recipe(recipeID, recipeDescription, recipeName);
     }
 }
