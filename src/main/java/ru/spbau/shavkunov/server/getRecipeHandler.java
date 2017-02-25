@@ -2,10 +2,17 @@ package ru.spbau.shavkunov.server;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import ru.spbau.mit.foodmanager.Recipe;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 public class getRecipeHandler implements HttpHandler {
     @Override
@@ -29,11 +36,11 @@ public class getRecipeHandler implements HttpHandler {
                 }
                 stmt.close();
 
+                Recipe recipe = new Recipe(recipeID, recipeDescription, recipeName);
                 httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(httpExchange.getResponseBody())
                 ) {
-                    objectOutputStream.writeObject(recipeDescription);
-                    objectOutputStream.writeObject(recipeName);
+                    objectOutputStream.writeObject(recipe);
                     objectOutputStream.flush();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -43,7 +50,6 @@ public class getRecipeHandler implements HttpHandler {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
     }
 }
