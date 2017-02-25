@@ -24,7 +24,7 @@ public class getRecipeStepsHandler implements HttpHandler {
                     "WHERE Step.recipe_ID = " + recipeID + " AND Image.entity_type = 0";
 
             try {
-                Connection connection = DriverManager.getConnection("jdbc:sqlite:" + Main.databaseName);
+                Connection connection = Server.getConnection();
                 Statement stmt = connection.createStatement();
                 ResultSet steps = stmt.executeQuery(stepsQuery);
                 ArrayList<ArrayList<String>> stepsData = new ArrayList<>();

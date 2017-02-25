@@ -20,7 +20,7 @@ public class getUserSettingsHandler implements HttpHandler {
              ObjectInputStream input = new ObjectInputStream(inputStream)) {
             String userID = (String) input.readObject();
             String query = "SELECT user_settings FROM user_settings WHERE user_ID = '" + userID + "'";
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:" + Main.databaseName);
+            Connection connection = Server.getConnection();
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(query);
 

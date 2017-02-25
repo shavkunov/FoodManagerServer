@@ -3,6 +3,9 @@ package ru.spbau.shavkunov.server;
 import com.sun.net.httpserver.HttpServer;
 
 import java.net.InetSocketAddress;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class Server {
     public static final int port = 48800; // free random port;
@@ -19,6 +22,18 @@ public class Server {
     private static final String getFavoritesCommand = "/getFavorites";
     private static final String getRecipesOfCategoryCommand = "/getRecipesOfCategory";
     private static final String getCategoryByIDCommand = "/getCategoryByID";
+    private static final String setUserLikeCommand = "/setLike";
+    private static final String setUserNotLikeCommand = "/setNotLike";
+
+    private static Connection connection = null;
+
+    public static Connection getConnection() throws SQLException {
+        if (connection == null) {
+            connection = DriverManager.getConnection("jdbc:sqlite:" + Main.databaseName);
+        }
+
+        return connection;
+    }
 
     public Server() {}
 
@@ -32,6 +47,9 @@ public class Server {
             server.createContext(getRecipesByFilterCommand, new getRecipesByFilterHandler());
             server.createContext(getUserSettingsCommand, new getUserSettingsHandler());
             server.createContext(getUserLikeCommand, new getUserLikeHandler());
+            server.createContext(getRecipeLikesCommand, new getRecipeLikesHandler());
+            server.createContext(setUserLikeCommand, new setLikeHandler());
+            server.createContext(setUserNotLikeCommand, new setNotLikeHandler());
             // TODO : others contexts
             server.setExecutor(null);
             server.start();

@@ -9,7 +9,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ public class getRecipeCategoriesHangler implements HttpHandler {
             String categoriesQuery = "SELECT category_ID FROM Recipe_to_category WHERE recipe_ID = " + recipeID;
             System.out.println(categoriesQuery);
             try {
-                Connection connection = DriverManager.getConnection("jdbc:sqlite:" + Main.databaseName);
+                Connection connection = Server.getConnection();
                 Statement stmt = connection.createStatement();
                 ResultSet categories = stmt.executeQuery(categoriesQuery);
                 ArrayList<Integer> ids = new ArrayList<>();
@@ -34,7 +33,6 @@ public class getRecipeCategoriesHangler implements HttpHandler {
                 }
 
                 stmt.close();
-
                 httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(httpExchange.getResponseBody())
                 ) {

@@ -24,7 +24,7 @@ public class getRecipeHandler implements HttpHandler {
             String recipeQuery = "SELECT name, description FROM Recipe WHERE ID = " + recipeID;
             System.out.println("Sending recipe with recipeID = " + recipeID);
             try {
-                Connection connection = DriverManager.getConnection("jdbc:sqlite:" + Main.databaseName);
+                Connection connection = Server.getConnection();
                 Statement stmt = connection.createStatement();
                 ResultSet mainData = stmt.executeQuery(recipeQuery);
 

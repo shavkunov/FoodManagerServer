@@ -20,7 +20,7 @@ public class getRecipeIngredientsHandler implements HttpHandler {
              ObjectInputStream input = new ObjectInputStream(inputStream)) {
 
             int recipeID = input.readInt();
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:" + Main.databaseName);
+            Connection connection = Server.getConnection();
             Statement stmt = connection.createStatement();
             String ingredientsQuery = "SELECT name, measure, quantity " +
                     "FROM Ingredient_to_recipe AS itr " +
