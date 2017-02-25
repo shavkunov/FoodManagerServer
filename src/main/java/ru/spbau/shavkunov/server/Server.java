@@ -55,6 +55,8 @@ public class Server {
             server.createContext(addToFavoritesCommand, new addToFavoritesHandler());
             server.createContext(removeFromFavoritesCommand, new removeFromFavoritesHandler());
             server.createContext(getFavoritesCommand, new getFavoritesHandler());
+            server.createContext(getRecipesOfCategoryCommand, new getRecipesOfCategoryHandler());
+            server.createContext(getCategoryByIDCommand, new getCategoryByIDHandler());
 
             // TODO : others contexts
             server.setExecutor(null);
