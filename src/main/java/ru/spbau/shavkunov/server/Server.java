@@ -22,6 +22,7 @@ public class Server {
     private static final String getFavoritesCommand = "/getFavorites";
     private static final String getRecipesOfCategoryCommand = "/getRecipesOfCategory";
     private static final String getCategoryByIDCommand = "/getCategoryByID";
+    private static final String getCategoriesListCommand = "/getCategoriesList";
     private static final String setUserLikeCommand = "/setLike";
     private static final String setUserNotLikeCommand = "/setNotLike";
     private static final String addToFavoritesCommand = "/addToFavorites";
@@ -57,6 +58,8 @@ public class Server {
             server.createContext(getFavoritesCommand, new getFavoritesHandler());
             server.createContext(getRecipesOfCategoryCommand, new getRecipesOfCategoryHandler());
             server.createContext(getCategoryByIDCommand, new getCategoryByIDHandler());
+            server.createContext(getCategoriesListCommand, new getCategoryListHandler());
+
 
             // TODO : others contexts
             server.setExecutor(null);
