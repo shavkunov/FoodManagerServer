@@ -34,6 +34,7 @@ public class getRecipeStepsHandler implements HttpHandler {
                     String imageURL = steps.getString("link");
                     stepsData.add(new ArrayList<>(Arrays.asList(stepDescription, imageURL)));
                 }
+
                 stmt.close();
                 httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 ObjectOutputStream output = new ObjectOutputStream(httpExchange.getResponseBody());
