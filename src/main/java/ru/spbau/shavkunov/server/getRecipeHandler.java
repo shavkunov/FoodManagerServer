@@ -11,7 +11,6 @@ import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 
 public class getRecipeHandler implements HttpHandler {
@@ -40,7 +39,7 @@ public class getRecipeHandler implements HttpHandler {
         }
     }
 
-    public static Recipe getRecipe(int recipeID) throws SQLException {
+    public static Recipe getRecipe(int recipeID) throws Exception {
         String recipeQuery = "SELECT name, description FROM Recipe WHERE ID = " + recipeID;
         Connection connection = Server.getConnection();
         Statement stmt = connection.createStatement();

@@ -5,7 +5,6 @@ import com.sun.net.httpserver.HttpServer;
 import java.net.InetSocketAddress;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 
 public class Server {
     public static final int port = 48800; // free random port;
@@ -35,7 +34,9 @@ public class Server {
 
     private static Connection connection = null;
 
-    public static Connection getConnection() throws SQLException {
+    public static Connection getConnection() throws Exception {
+        Class.forName("org.sqlite.JDBC");
+
         if (connection == null) {
             connection = DriverManager.getConnection("jdbc:sqlite:" + Main.databaseName);
         }

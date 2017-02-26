@@ -43,11 +43,9 @@ public class getRecipeStepsHandler implements HttpHandler {
                 output.close();
 
                 System.out.println("Sent recipe steps");
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-
-
         }
     }
 }

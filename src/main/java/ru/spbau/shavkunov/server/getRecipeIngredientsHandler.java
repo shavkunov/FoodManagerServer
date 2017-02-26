@@ -47,7 +47,7 @@ public class getRecipeIngredientsHandler implements HttpHandler {
             output.close();
 
             System.out.println("Sent Ingredients of recipeID = " + recipeID);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
