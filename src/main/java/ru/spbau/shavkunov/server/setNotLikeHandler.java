@@ -17,16 +17,20 @@ public class setNotLikeHandler implements HttpHandler {
              ObjectInputStream input = new ObjectInputStream(inputStream)) {
             int recipeID = input.readInt();
             String userID = (String) input.readObject();
-            String removeLikeQuery = "DELETE FROM Likes WHERE user_ID = '" + userID + "' AND recipe_ID = " + recipeID;
-            Connection connection = Server.getConnection();
-            Statement stmt = connection.createStatement();
-            stmt.executeUpdate(removeLikeQuery);
-            stmt.close();
+            setNotLike(recipeID, userID);
             httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 
             System.out.println("Removed user like");
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void setNotLike(int recipeID, String userID) throws Exception {
+        String removeLikeQuery = "DELETE FROM Likes WHERE user_ID = '" + userID + "' AND recipe_ID = " + recipeID;
+        Connection connection = Server.getConnection();
+        Statement stmt = connection.createStatement();
+        stmt.executeUpdate(removeLikeQuery);
+        stmt.close();
     }
 }

@@ -21,29 +21,24 @@ import java.util.Map;
 
 public class insertRecipeHandler implements HttpHandler {
     Connection connection = null;
+    RecipeInformation data;
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
         try (InputStream inputStream = httpExchange.getRequestBody();
              ObjectInputStream input = new ObjectInputStream(inputStream)) {
 
-            String recipeName = (String) input.readObject();
-            String recipeDescription = (String) input.readObject();
-            ArrayList<Integer> categoryIDs = (ArrayList<Integer>) input.readObject();
-            String userID = (String) input.readObject();
-            ArrayList<Ingredient> ingredients = (ArrayList<Ingredient>) input.readObject();
-            ArrayList<String> stepDescriptions = (ArrayList<String>) input.readObject();
-            ArrayList<ByteArrayInputStream> transformedImages = (ArrayList<ByteArrayInputStream>) input.readObject();
-
+            data = new RecipeInformation(input);
             connection = Server.getConnection();
             connection.setAutoCommit(false);
-            int recipeID = insertMainInformation(recipeName, recipeDescription);
-            insertUserRecipeRelation(userID, recipeID);
-            insertRecipeCategories(categoryIDs, recipeID);
-            ArrayList<Integer> ingredientIDs = insertRecipeIngredients(ingredients, recipeID);
-            insertRecipeIngredientRelation(ingredientIDs, ingredients, recipeID);
-            ArrayList<Integer> stepIDs = insertRecipeSteps(stepDescriptions, recipeID);
-            insertRecipeImageStepRelation(stepIDs, transformedImages);
+            int recipeID = insertMainInformation();
+            data.setRecipeID(recipeID);
+            insertUserRecipeRelation();
+            insertRecipeCategories();
+            ArrayList<Integer> ingredientIDs = insertRecipeIngredients();
+            insertRecipeIngredientRelation(ingredientIDs);
+            ArrayList<Integer> stepIDs = insertRecipeSteps();
+            insertRecipeImageStepRelation(stepIDs);
             connection.setAutoCommit(true);
 
             httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
@@ -54,10 +49,10 @@ public class insertRecipeHandler implements HttpHandler {
         }
     }
 
-    private int insertMainInformation(String recipeName, String recipeDescription) throws SQLException {
+    private int insertMainInformation() throws SQLException {
         Statement stmt = connection.createStatement();
         String insertRecipeQuery = "INSERT INTO Recipe(name, description) " +
-                                   "VALUES (" + recipeName + ", '" + recipeDescription + "')";
+                                   "VALUES (" + data.getRecipeName() + ", '" + data.getRecipeDescription() + "')";
 
         int res = stmt.executeUpdate(insertRecipeQuery);
         stmt.close();
@@ -65,20 +60,20 @@ public class insertRecipeHandler implements HttpHandler {
         return res;
     }
 
-    private void insertUserRecipeRelation(String userID, int recipeID) throws SQLException {
-        String deleteQuery = "DELETE FROM User_to_recipe WHERE recipe_ID = " + recipeID;
+    private void insertUserRecipeRelation() throws SQLException {
+        String deleteQuery = "DELETE FROM User_to_recipe WHERE recipe_ID = " + data.getRecipeID();
         Statement stmt = connection.createStatement();
         stmt.executeUpdate(deleteQuery);
-        String insertQuery = "INSERT INTO User_to_recipe VALUES (" + recipeID + ", '" + userID + "')";
+        String insertQuery = "INSERT INTO User_to_recipe VALUES (" + data.getRecipeID() + ", '" + data.getUserID() + "')";
         stmt.executeUpdate(insertQuery);
         stmt.close();
     }
 
-    private void insertRecipeCategories(ArrayList<Integer> categoryIDs, int recipeID) throws SQLException {
+    private void insertRecipeCategories() throws SQLException {
         Statement stmt = connection.createStatement();
-        for (int categoryID : categoryIDs) {
+        for (int categoryID : data.getCategoryIDs()) {
             String insertCategoryQuery = "INSERT INTO Recipe_to_category (recipe_ID, category_ID) "
-                                       + "VALUES (" + recipeID + ", " + categoryID + ")";
+                                       + "VALUES (" + data.getRecipeID() + ", " + categoryID + ")";
 
             stmt.executeUpdate(insertCategoryQuery);
         }
@@ -86,16 +81,16 @@ public class insertRecipeHandler implements HttpHandler {
         stmt.close();
     }
 
-    private ArrayList<Integer> insertRecipeIngredients(ArrayList<Ingredient> ingredients, int recipeID) {
+    private ArrayList<Integer> insertRecipeIngredients() {
         ArrayList<Integer> ids = new ArrayList<>();
 
         try {
-            for (Ingredient ing : ingredients) {
+            for (Ingredient ing : data.getIngredients()) {
                 String insertIngredientQuery = "INSERT INTO Ingredient (ID, name) " +
                                                "VALUES (?, ?)";
 
                 PreparedStatement preparedStatement = connection.prepareStatement(insertIngredientQuery);
-                preparedStatement.setInt(1, recipeID);
+                preparedStatement.setInt(1, data.getRecipeID());
                 preparedStatement.setString(2, ing.getName());
                 ids.add(preparedStatement.executeUpdate());
                 preparedStatement.close();
@@ -107,16 +102,16 @@ public class insertRecipeHandler implements HttpHandler {
         return ids;
     }
 
-    private void insertRecipeIngredientRelation(ArrayList<Integer> ingredientIDs, ArrayList<Ingredient> ingredients, int recipeID) {
+    private void insertRecipeIngredientRelation(ArrayList<Integer> ingredientIDs) {
         try {
             Statement stmt = connection.createStatement();
             // ingredients.size() == ingredientIDs.size()
-            for (int i = 0; i < ingredients.size(); i++) {
-                double quantity = ingredients.get(i).getQuantity();
-                int measureOrdinal = ingredients.get(i).getMeasure().ordinal();
+            for (int i = 0; i < data.getIngredients().size(); i++) {
+                double quantity = data.getIngredients().get(i).getQuantity();
+                int measureOrdinal = data.getIngredients().get(i).getMeasure().ordinal();
                 String insertRelationQuery = "INSERT INTO Ingredient_to_recipe " +
                         "(Ingredient_ID, recipe_ID, measure, quantity) VALUES " +
-                        "(" + ingredientIDs.get(i) + ", " + recipeID +
+                        "(" + ingredientIDs.get(i) + ", " + data.getRecipeID() +
                         ", " + measureOrdinal + ", " + quantity + ")";
 
                 stmt.executeUpdate(insertRelationQuery);
@@ -127,13 +122,13 @@ public class insertRecipeHandler implements HttpHandler {
         }
     }
 
-    private ArrayList<Integer> insertRecipeSteps(ArrayList<String> descriptions, int recipeID) throws SQLException {
+    private ArrayList<Integer> insertRecipeSteps() throws SQLException {
         ArrayList<Integer> ids = new ArrayList<>();
 
-        for (String description : descriptions) {
+        for (String description : data.getStepDescriptions()) {
             String insertStep = "INSERT INTO Step(recipe_ID, description) VALUES  (?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(insertStep);
-            preparedStatement.setInt(1, recipeID);
+            preparedStatement.setInt(1, data.getRecipeID());
             preparedStatement.setString(2, description);
             ids.add(preparedStatement.executeUpdate());
             preparedStatement.close();
@@ -142,13 +137,13 @@ public class insertRecipeHandler implements HttpHandler {
         return ids;
     }
 
-    private void insertRecipeImageStepRelation(ArrayList<Integer> ids, ArrayList<ByteArrayInputStream> transformedImages) {
+    private void insertRecipeImageStepRelation(ArrayList<Integer> ids) {
         try {
             for (int i = 0; i < ids.size(); i++) {
                 String insertRelation = "INSERT INTO Image(entity_type, entity_ID, link) " +
                         "VALUES (?, ?, ?)";
 
-                ByteArrayInputStream bs = transformedImages.get(i);
+                ByteArrayInputStream bs = data.getTransformedImages().get(i);
                 String link = uploadImage(bs);
                 PreparedStatement preparedStatement = connection.prepareStatement(insertRelation);
                 preparedStatement.setInt(1, 0);

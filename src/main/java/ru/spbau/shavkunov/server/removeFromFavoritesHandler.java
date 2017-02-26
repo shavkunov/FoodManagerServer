@@ -16,17 +16,21 @@ public class removeFromFavoritesHandler implements HttpHandler {
         try (InputStream inputStream = httpExchange.getRequestBody();
              ObjectInputStream input = new ObjectInputStream(inputStream)) {
             int recipeID = input.readInt();
-            String removeQuery = "DELETE FROM Favorites WHERE recipe_ID = " + recipeID;
-
-            Connection connection = Server.getConnection();
-            Statement stmt = connection.createStatement();
-            stmt.executeUpdate(removeQuery);
-            stmt.close();
+            removeRecipeFromFavorites(recipeID);
             httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 
             System.out.println("removed recipe = " + recipeID + " from favorites");
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void removeRecipeFromFavorites(int recipeID) throws Exception {
+        String removeQuery = "DELETE FROM Favorites WHERE recipe_ID = " + recipeID;
+
+        Connection connection = Server.getConnection();
+        Statement stmt = connection.createStatement();
+        stmt.executeUpdate(removeQuery);
+        stmt.close();
     }
 }

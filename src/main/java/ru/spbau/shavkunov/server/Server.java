@@ -31,6 +31,7 @@ public class Server {
     private static final String getRandomDishCommand = "/getRandomDishOfCategory";
     private static final String isUserOwnRecipeCommand = "/ownRecipe";
     private static final String insertRecipeCommand = "/insertRecipe";
+    private static final String deleteRecipeCommand = "/deleteRecipe";
 
     private static Connection connection = null;
 
@@ -69,6 +70,7 @@ public class Server {
             server.createContext(getRandomDishCommand, new getRandomDishOfCategoryHandler());
             server.createContext(isUserOwnRecipeCommand, new userOwnRecipeHandler());
             server.createContext(insertRecipeCommand, new insertRecipeHandler());
+            server.createContext(deleteRecipeCommand, new deleteRecipeHandler());
 
 
             // TODO : others contexts
