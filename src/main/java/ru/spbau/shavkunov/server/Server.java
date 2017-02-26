@@ -19,7 +19,7 @@ public class Server {
     public static Connection getConnection() throws Exception {
         Class.forName("org.sqlite.JDBC");
 
-        if (connection == null) {
+        while (connection == null) {
             connection = DriverManager.getConnection("jdbc:sqlite:" + Main.databaseName);
         }
 
