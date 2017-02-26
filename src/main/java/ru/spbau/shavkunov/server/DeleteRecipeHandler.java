@@ -17,6 +17,14 @@ public class DeleteRecipeHandler implements HttpHandler {
     Connection connection = null;
     RecipeInformation data;
 
+    DeleteRecipeHandler () {
+        try {
+            connection = Server.getConnection();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
         try (InputStream inputStream = httpExchange.getRequestBody();

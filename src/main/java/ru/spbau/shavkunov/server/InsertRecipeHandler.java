@@ -18,6 +18,14 @@ public class InsertRecipeHandler implements HttpHandler {
     private Connection connection = null;
     private RecipeInformation data;
 
+    InsertRecipeHandler () {
+        try {
+            connection = Server.getConnection();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
         try (InputStream inputStream = httpExchange.getRequestBody();
