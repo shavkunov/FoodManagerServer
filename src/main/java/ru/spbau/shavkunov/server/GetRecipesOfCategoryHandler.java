@@ -14,30 +14,30 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-public class getFavoritesHandler implements HttpHandler {
+public class GetRecipesOfCategoryHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
         try (InputStream inputStream = httpExchange.getRequestBody();
              ObjectInputStream input = new ObjectInputStream(inputStream)) {
-            String userID = (String) input.readObject();
-            String favoritesQuery = "SELECT recipe_ID FROM Favorites WHERE user_ID = '" + userID + "'";
+            int categoryID = input.readInt();
+            String categoryQuery = "SELECT recipe_ID FROM Recipe_to_category WHERE category_ID = " + categoryID;
 
             Connection connection = Server.getConnection();
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(favoritesQuery);
-            ArrayList<Recipe> favorites = new ArrayList<>();
+            ResultSet rs = stmt.executeQuery(categoryQuery);
+            ArrayList<Recipe> recipes = new ArrayList<>();
             while (rs.next()) {
-                favorites.add(GetRecipeHandler.getRecipe(rs.getInt("recipe_ID")));
+                recipes.add(GetRecipeHandler.getRecipe(rs.getInt("recipe_ID")));
             }
             stmt.close();
 
             httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
             ObjectOutputStream output = new ObjectOutputStream(httpExchange.getResponseBody());
-            output.writeObject(favorites);
+            output.writeObject(recipes);
             output.flush();
             output.close();
 
-            System.out.println("Sent user favorites");
+            System.out.println("Sent recipes of category");
         } catch (Exception e) {
             e.printStackTrace();
         }

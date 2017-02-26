@@ -12,30 +12,28 @@ import java.net.HttpURLConnection;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 
-public class getRandomDishOfCategoryHandler implements HttpHandler {
+public class GetFavoritesHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
         try (InputStream inputStream = httpExchange.getRequestBody();
              ObjectInputStream input = new ObjectInputStream(inputStream)) {
-            int categoryID = input.readInt();
-            String getRandomRecipeQuery = "SELECT recipe_ID FROM Recipe_to_category " +
-                    "WHERE category_ID = " + categoryID +
-                    " ORDER BY RANDOM() LIMIT 1";
+            String userID = (String) input.readObject();
+            String favoritesQuery = "SELECT recipe_ID FROM Favorites WHERE user_ID = '" + userID + "'";
+
             Connection connection = Server.getConnection();
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(getRandomRecipeQuery);
-
-            int recipeID = 0;
-            if (rs.next()) {
-                recipeID = rs.getInt("recipe_ID");
+            ResultSet rs = stmt.executeQuery(favoritesQuery);
+            ArrayList<Recipe> favorites = new ArrayList<>();
+            while (rs.next()) {
+                favorites.add(GetRecipeHandler.getRecipe(rs.getInt("recipe_ID")));
             }
             stmt.close();
-            Recipe recipe = GetRecipeHandler.getRecipe(recipeID);
 
             httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
             ObjectOutputStream output = new ObjectOutputStream(httpExchange.getResponseBody());
-            output.writeObject(recipe);
+            output.writeObject(favorites);
             output.flush();
             output.close();
 

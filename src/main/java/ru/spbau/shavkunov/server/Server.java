@@ -43,12 +43,12 @@ public class Server {
             server.createContext(setUserNotLikeCommand, new SetNotLikeHandler());
             server.createContext(addToFavoritesCommand, new AddToFavoritesHandler());
             server.createContext(removeFromFavoritesCommand, new RemoveFromFavoritesHandler());
-            server.createContext(getFavoritesCommand, new getFavoritesHandler());
-            server.createContext(getRecipesOfCategoryCommand, new getRecipesOfCategoryHandler());
+            server.createContext(getFavoritesCommand, new GetFavoritesHandler());
+            server.createContext(getRecipesOfCategoryCommand, new GetRecipesOfCategoryHandler());
             server.createContext(getCategoryByIDCommand, new GetCategoryByIDHandler());
             server.createContext(getCategoriesListCommand, new GetCategoryListHandler());
             server.createContext(saveUserSettingsCommand, new SaveUserSettingsHandler());
-            server.createContext(getRandomDishCommand, new getRandomDishOfCategoryHandler());
+            server.createContext(getRandomDishCommand, new GetRandomDishOfCategoryHandler());
             server.createContext(isUserOwnRecipeCommand, new UserOwnRecipeHandler());
             server.createContext(insertRecipeCommand, new InsertRecipeHandler());
             server.createContext(deleteRecipeCommand, new DeleteRecipeHandler());
