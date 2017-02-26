@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class InsertRecipeHandler implements HttpHandler {
-    Connection connection = null;
-    RecipeInformation data;
+    private Connection connection = null;
+    private RecipeInformation data;
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
@@ -44,11 +44,11 @@ public class InsertRecipeHandler implements HttpHandler {
         int recipeID = insertMainInformation();
         data.setRecipeID(recipeID);
         insertUserRecipeRelation();
-        insertRecipeCategories();
-        ArrayList<Integer> ingredientIDs = insertRecipeIngredients();
-        insertRecipeIngredientRelation(ingredientIDs);
-        ArrayList<Integer> stepIDs = insertRecipeSteps();
-        insertRecipeImageStepRelation(stepIDs);
+        insertRecipeCategories(data);
+        ArrayList<Integer> ingredientIDs = insertRecipeIngredients(data);
+        insertRecipeIngredientRelation(ingredientIDs, data);
+        ArrayList<Integer> stepIDs = insertRecipeSteps(data);
+        insertRecipeImageStepRelation(stepIDs, data);
         connection.setAutoCommit(true);
     }
 
@@ -72,11 +72,11 @@ public class InsertRecipeHandler implements HttpHandler {
         stmt.close();
     }
 
-    private void insertRecipeCategories() throws SQLException {
+    public void insertRecipeCategories(RecipeInformation recipe) throws SQLException {
         Statement stmt = connection.createStatement();
-        for (int categoryID : data.getCategoryIDs()) {
+        for (int categoryID : recipe.getCategoryIDs()) {
             String insertCategoryQuery = "INSERT INTO Recipe_to_category (recipe_ID, category_ID) "
-                                       + "VALUES (" + data.getRecipeID() + ", " + categoryID + ")";
+                                       + "VALUES (" + recipe.getRecipeID() + ", " + categoryID + ")";
 
             stmt.executeUpdate(insertCategoryQuery);
         }
@@ -84,16 +84,16 @@ public class InsertRecipeHandler implements HttpHandler {
         stmt.close();
     }
 
-    private ArrayList<Integer> insertRecipeIngredients() {
+    public ArrayList<Integer> insertRecipeIngredients(RecipeInformation recipe) {
         ArrayList<Integer> ids = new ArrayList<>();
 
         try {
-            for (Ingredient ing : data.getIngredients()) {
+            for (Ingredient ing : recipe.getIngredients()) {
                 String insertIngredientQuery = "INSERT INTO Ingredient (ID, name) " +
                                                "VALUES (?, ?)";
 
                 PreparedStatement preparedStatement = connection.prepareStatement(insertIngredientQuery);
-                preparedStatement.setInt(1, data.getRecipeID());
+                preparedStatement.setInt(1, recipe.getRecipeID());
                 preparedStatement.setString(2, ing.getName());
                 ids.add(preparedStatement.executeUpdate());
                 preparedStatement.close();
@@ -105,16 +105,16 @@ public class InsertRecipeHandler implements HttpHandler {
         return ids;
     }
 
-    private void insertRecipeIngredientRelation(ArrayList<Integer> ingredientIDs) {
+    public void insertRecipeIngredientRelation(ArrayList<Integer> ingredientIDs, RecipeInformation recipe) {
         try {
             Statement stmt = connection.createStatement();
             // ingredients.size() == ingredientIDs.size()
-            for (int i = 0; i < data.getIngredients().size(); i++) {
-                double quantity = data.getIngredients().get(i).getQuantity();
-                int measureOrdinal = data.getIngredients().get(i).getMeasure().ordinal();
+            for (int i = 0; i < recipe.getIngredients().size(); i++) {
+                double quantity = recipe.getIngredients().get(i).getQuantity();
+                int measureOrdinal = recipe.getIngredients().get(i).getMeasure().ordinal();
                 String insertRelationQuery = "INSERT INTO Ingredient_to_recipe " +
                         "(Ingredient_ID, recipe_ID, measure, quantity) VALUES " +
-                        "(" + ingredientIDs.get(i) + ", " + data.getRecipeID() +
+                        "(" + ingredientIDs.get(i) + ", " + recipe.getRecipeID() +
                         ", " + measureOrdinal + ", " + quantity + ")";
 
                 stmt.executeUpdate(insertRelationQuery);
@@ -125,13 +125,13 @@ public class InsertRecipeHandler implements HttpHandler {
         }
     }
 
-    private ArrayList<Integer> insertRecipeSteps() throws SQLException {
+    public ArrayList<Integer> insertRecipeSteps(RecipeInformation recipe) throws SQLException {
         ArrayList<Integer> ids = new ArrayList<>();
 
-        for (String description : data.getStepDescriptions()) {
+        for (String description : recipe.getStepDescriptions()) {
             String insertStep = "INSERT INTO Step(recipe_ID, description) VALUES  (?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(insertStep);
-            preparedStatement.setInt(1, data.getRecipeID());
+            preparedStatement.setInt(1, recipe.getRecipeID());
             preparedStatement.setString(2, description);
             ids.add(preparedStatement.executeUpdate());
             preparedStatement.close();
@@ -140,13 +140,13 @@ public class InsertRecipeHandler implements HttpHandler {
         return ids;
     }
 
-    private void insertRecipeImageStepRelation(ArrayList<Integer> ids) {
+    public void insertRecipeImageStepRelation(ArrayList<Integer> ids, RecipeInformation recipe) {
         try {
             for (int i = 0; i < ids.size(); i++) {
                 String insertRelation = "INSERT INTO Image(entity_type, entity_ID, link) " +
                         "VALUES (?, ?, ?)";
 
-                ByteArrayInputStream bs = data.getTransformedImages().get(i);
+                ByteArrayInputStream bs = recipe.getTransformedImages().get(i);
                 String link = uploadImage(bs);
                 PreparedStatement preparedStatement = connection.prepareStatement(insertRelation);
                 preparedStatement.setInt(1, 0);

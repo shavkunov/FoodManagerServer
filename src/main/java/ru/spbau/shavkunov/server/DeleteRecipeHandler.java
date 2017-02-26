@@ -33,16 +33,15 @@ public class DeleteRecipeHandler implements HttpHandler {
         }
     }
 
-    public void deleteRecipe(RecipeInformation data) throws Exception {
+    private void deleteRecipe(RecipeInformation data) throws Exception {
         connection = Server.getConnection();
         connection.setAutoCommit(false);
         deleteRecipeMainInformation();
         deleteUserRecipeRelation();
-        deleteRecipeCategories();
-        deleteRecipeIngredients();
-        deleteIngredientToRecipeRelation();
-        deleteRecipeSteps();
-        ArrayList<Integer> stepIDs = getRecipeStepIDs();
+        deleteRecipeCategories(data);
+        deleteRecipeIngredients(data);
+        deleteRecipeSteps(data);
+        ArrayList<Integer> stepIDs = getRecipeStepIDs(data);
         deleteRecipeImageStepRelation(stepIDs);
         SetNotLikeHandler.setNotLike(data.getRecipeID(), data.getUserID());
         RemoveFromFavoritesHandler.removeRecipeFromFavorites(data.getRecipeID());
@@ -63,14 +62,14 @@ public class DeleteRecipeHandler implements HttpHandler {
         stmt.close();
     }
 
-    private void deleteRecipeSteps() throws SQLException {
-        String deleteStepsQuery = "DELETE FROM Step WHERE recipe_ID = " + data.getRecipeID();
+    public void deleteRecipeSteps(RecipeInformation recipe) throws SQLException {
+        String deleteStepsQuery = "DELETE FROM Step WHERE recipe_ID = " + recipe.getRecipeID();
         Statement stmt = connection.createStatement();
         stmt.executeUpdate(deleteStepsQuery);
         stmt.close();
     }
 
-    private void deleteRecipeImageStepRelation(ArrayList<Integer> ids) throws SQLException {
+    public void deleteRecipeImageStepRelation(ArrayList<Integer> ids) throws SQLException {
         String deleteImagesQuery = "DELETE FROM Image WHERE entity_type = 0 AND entity_ID IN (";
         for (int i = 0; i < ids.size() - 1; i++) {
             deleteImagesQuery += ids.get(i) + ", ";
@@ -81,8 +80,8 @@ public class DeleteRecipeHandler implements HttpHandler {
         stmt.close();
     }
 
-    private void deleteIngredientToRecipeRelation() throws SQLException {
-        String deleteQuery = "DELETE FROM Ingredient_to_recipe WHERE recipe_ID = " + data.getRecipeID();
+    private void deleteIngredientToRecipeRelation(RecipeInformation recipe) throws SQLException {
+        String deleteQuery = "DELETE FROM Ingredient_to_recipe WHERE recipe_ID = " + recipe.getRecipeID();
         Statement stmt = connection.createStatement();
         stmt.executeUpdate(deleteQuery);
         stmt.close();
@@ -99,23 +98,23 @@ public class DeleteRecipeHandler implements HttpHandler {
         stmt.close();
     }
 
-    private void deleteRecipeIngredients() throws SQLException {
+    public void deleteRecipeIngredients(RecipeInformation recipe) throws SQLException {
         ArrayList<Integer> ids = getRecipeIngredientIDs();
-        deleteIngredientToRecipeRelation();
+        deleteIngredientToRecipeRelation(recipe);
         deleteRecipeIngredientsFromIngredient(ids);
     }
 
-    private void deleteRecipeCategories() throws SQLException {
+    public void deleteRecipeCategories(RecipeInformation recipe) throws SQLException {
         Statement stmt = connection.createStatement();
         String deletePreviousCategoriesQuery = "DELETE FROM Recipe_to_category " +
-                "WHERE recipe_ID = " + data.getRecipeID();
+                "WHERE recipe_ID = " + recipe.getRecipeID();
 
         stmt.executeUpdate(deletePreviousCategoriesQuery);
     }
 
-    private ArrayList<Integer> getRecipeStepIDs() throws SQLException {
+    public ArrayList<Integer> getRecipeStepIDs(RecipeInformation recipe) throws SQLException {
         ArrayList<Integer> ids = new ArrayList<>();
-        String getStepsQuery = "SELECT ID FROM Step WHERE recipe_ID = " + data.getRecipeID();
+        String getStepsQuery = "SELECT ID FROM Step WHERE recipe_ID = " + recipe.getRecipeID();
         Statement stmt = connection.createStatement();
         ResultSet rs = stmt.executeQuery(getStepsQuery);
         while (rs.next()) {
