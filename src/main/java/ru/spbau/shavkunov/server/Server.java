@@ -6,33 +6,13 @@ import java.net.InetSocketAddress;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
+import static ru.spbau.shavkunov.server.Commands.*;
+
 public class Server {
     public static final int port = 48800; // free random port;
     public static final String LOCAL_IP = "192.168.211.199"; // my local IP address
     public static final String PUBLIC_IP = "217.118.78.126"; // my public IP address
     public static final String CLOUDINARY_URL = "cloudinary://285162791646134:yGqzM1FdReQ8uPa1taEUZihoNgI@dxc952wrd";
-    private static final String getRecipeCommand = "/getRecipe";
-    private static final String getRecipeCategoriesCommand = "/getRecipeCategories";
-    private static final String getRecipeIngredientsCommand = "/getRecipeIngredients";
-    private static final String getRecipeStepsCommand = "/getRecipeSteps";
-    private static final String getRecipesByFilterCommand = "/getRecipesByFilter";
-    private static final String getUserSettingsCommand = "/getUserSettings";
-    private static final String getUserLikeCommand = "/getUserLike";
-    private static final String getRecipeLikesCommand = "/getRecipeLikes";
-    private static final String getFavoritesCommand = "/getFavorites";
-    private static final String getRecipesOfCategoryCommand = "/getRecipesOfCategory";
-    private static final String getCategoryByIDCommand = "/getCategoryByID";
-    private static final String getCategoriesListCommand = "/getCategoriesList";
-    private static final String setUserLikeCommand = "/setLike";
-    private static final String setUserNotLikeCommand = "/setNotLike";
-    private static final String addToFavoritesCommand = "/addToFavorites";
-    private static final String removeFromFavoritesCommand = "/removeFromFavorites";
-    private static final String saveUserSettingsCommand = "/saveUserSettings";
-    private static final String getRandomDishCommand = "/getRandomDishOfCategory";
-    private static final String isUserOwnRecipeCommand = "/ownRecipe";
-    private static final String insertRecipeCommand = "/insertRecipe";
-    private static final String deleteRecipeCommand = "/deleteRecipe";
-    private static final String changeRecipeCommand = "/changeRecipe";
 
     private static Connection connection = null;
 
