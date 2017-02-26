@@ -90,12 +90,11 @@ public class InsertRecipeHandler implements HttpHandler {
 
         try {
             for (Ingredient ing : recipe.getIngredients()) {
-                String insertIngredientQuery = "INSERT INTO Ingredient (ID, name) " +
-                                               "VALUES (?, ?)";
+                String insertIngredientQuery = "INSERT INTO Ingredient (name) " +
+                                               "VALUES (?)";
 
                 PreparedStatement preparedStatement = connection.prepareStatement(insertIngredientQuery);
-                preparedStatement.setInt(1, recipe.getRecipeID());
-                preparedStatement.setString(2, ing.getName());
+                preparedStatement.setString(1, ing.getName());
                 ids.add(preparedStatement.executeUpdate());
                 preparedStatement.close();
             }
@@ -114,8 +113,8 @@ public class InsertRecipeHandler implements HttpHandler {
                 double quantity = recipe.getIngredients().get(i).getQuantity();
                 int measureOrdinal = recipe.getIngredients().get(i).getMeasure().ordinal();
                 String insertRelationQuery = "INSERT INTO Ingredient_to_recipe " +
-                        "(Ingredient_ID, recipe_ID, measure, quantity) VALUES " +
-                        "(" + ingredientIDs.get(i) + ", " + recipe.getRecipeID() +
+                        "(recipe_ID, measure, quantity) VALUES " +
+                        "(" + recipe.getRecipeID() +
                         ", " + measureOrdinal + ", " + quantity + ")";
 
                 stmt.executeUpdate(insertRelationQuery);
