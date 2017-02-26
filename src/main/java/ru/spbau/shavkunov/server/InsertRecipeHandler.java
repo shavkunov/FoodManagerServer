@@ -54,7 +54,7 @@ public class InsertRecipeHandler implements HttpHandler {
 
     private int insertMainInformation() throws SQLException {
         Statement stmt = connection.createStatement();
-        String insertRecipeQuery = "INSERT INTO Recipe(name, description) " +
+        String insertRecipeQuery = "INSERT INTO Recipe (name, description) " +
                                    "VALUES (" + data.getRecipeName() + ", '" + data.getRecipeDescription() + "')";
 
         int res = stmt.executeUpdate(insertRecipeQuery);
@@ -146,7 +146,7 @@ public class InsertRecipeHandler implements HttpHandler {
                 String insertRelation = "INSERT INTO Image(entity_type, entity_ID, link) " +
                         "VALUES (?, ?, ?)";
 
-                ByteArrayInputStream bs = recipe.getTransformedImages().get(i);
+                ByteArrayInputStream bs = new ByteArrayInputStream(recipe.getTransformedImages().get(i));
                 String link = uploadImage(bs);
                 PreparedStatement preparedStatement = connection.prepareStatement(insertRelation);
                 preparedStatement.setInt(1, 0);

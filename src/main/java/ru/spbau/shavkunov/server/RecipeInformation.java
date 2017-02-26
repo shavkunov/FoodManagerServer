@@ -2,7 +2,6 @@ package ru.spbau.shavkunov.server;
 
 import ru.spbau.mit.foodmanager.Ingredient;
 
-import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
@@ -13,7 +12,7 @@ public class RecipeInformation {
     private String userID;
     private ArrayList<Ingredient> ingredients;
     private ArrayList<String> stepDescriptions;
-    private ArrayList<ByteArrayInputStream> transformedImages;
+    private ArrayList<byte []> transformedImages;
     private int recipeID;
 
     public RecipeInformation(ObjectInputStream input) throws Exception {
@@ -23,7 +22,7 @@ public class RecipeInformation {
         userID = (String) input.readObject();
         ingredients = (ArrayList<Ingredient>) input.readObject();
         stepDescriptions = (ArrayList<String>) input.readObject();
-        transformedImages = (ArrayList<ByteArrayInputStream>) input.readObject();
+        transformedImages = (ArrayList<byte[]>) input.readObject();
     }
 
     public void setRecipeName(String recipeName) {
@@ -48,10 +47,6 @@ public class RecipeInformation {
 
     public void setStepDescriptions(ArrayList<String> stepDescriptions) {
         this.stepDescriptions = stepDescriptions;
-    }
-
-    public void setTransformedImages(ArrayList<ByteArrayInputStream> transformedImages) {
-        this.transformedImages = transformedImages;
     }
 
     public void setRecipeID(int recipeID) {
@@ -82,7 +77,7 @@ public class RecipeInformation {
         return stepDescriptions;
     }
 
-    public ArrayList<ByteArrayInputStream> getTransformedImages() {
+    public ArrayList<byte[]> getTransformedImages() {
         return transformedImages;
     }
 
