@@ -24,25 +24,29 @@ public class deleteRecipeHandler implements HttpHandler {
 
             data = new RecipeInformation(input);
             data.setRecipeID(input.readInt());
-            connection = Server.getConnection();
-            connection.setAutoCommit(false);
-            deleteRecipeMainInformation();
-            deleteUserRecipeRelation();
-            deleteRecipeCategories();
-            deleteRecipeIngredients();
-            deleteIngredientToRecipeRelation();
-            deleteRecipeSteps();
-            ArrayList<Integer> stepIDs = getRecipeStepIDs();
-            deleteRecipeImageStepRelation(stepIDs);
-            setNotLikeHandler.setNotLike(data.getRecipeID(), data.getUserID());
-            removeFromFavoritesHandler.removeRecipeFromFavorites(data.getRecipeID());
-            connection.setAutoCommit(true);
+            deleteRecipe(data);
             httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 
             System.out.println("Deleted user recipe");
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void deleteRecipe(RecipeInformation data) throws Exception {
+        connection = Server.getConnection();
+        connection.setAutoCommit(false);
+        deleteRecipeMainInformation();
+        deleteUserRecipeRelation();
+        deleteRecipeCategories();
+        deleteRecipeIngredients();
+        deleteIngredientToRecipeRelation();
+        deleteRecipeSteps();
+        ArrayList<Integer> stepIDs = getRecipeStepIDs();
+        deleteRecipeImageStepRelation(stepIDs);
+        setNotLikeHandler.setNotLike(data.getRecipeID(), data.getUserID());
+        removeFromFavoritesHandler.removeRecipeFromFavorites(data.getRecipeID());
+        connection.setAutoCommit(true);
     }
 
     private void deleteRecipeMainInformation() throws SQLException {

@@ -29,24 +29,27 @@ public class insertRecipeHandler implements HttpHandler {
              ObjectInputStream input = new ObjectInputStream(inputStream)) {
 
             data = new RecipeInformation(input);
-            connection = Server.getConnection();
-            connection.setAutoCommit(false);
-            int recipeID = insertMainInformation();
-            data.setRecipeID(recipeID);
-            insertUserRecipeRelation();
-            insertRecipeCategories();
-            ArrayList<Integer> ingredientIDs = insertRecipeIngredients();
-            insertRecipeIngredientRelation(ingredientIDs);
-            ArrayList<Integer> stepIDs = insertRecipeSteps();
-            insertRecipeImageStepRelation(stepIDs);
-            connection.setAutoCommit(true);
-
+            insertRecipe(data);
             httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 
             System.out.println("Inserted user recipe");
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void insertRecipe(RecipeInformation data) throws Exception {
+        connection = Server.getConnection();
+        connection.setAutoCommit(false);
+        int recipeID = insertMainInformation();
+        data.setRecipeID(recipeID);
+        insertUserRecipeRelation();
+        insertRecipeCategories();
+        ArrayList<Integer> ingredientIDs = insertRecipeIngredients();
+        insertRecipeIngredientRelation(ingredientIDs);
+        ArrayList<Integer> stepIDs = insertRecipeSteps();
+        insertRecipeImageStepRelation(stepIDs);
+        connection.setAutoCommit(true);
     }
 
     private int insertMainInformation() throws SQLException {

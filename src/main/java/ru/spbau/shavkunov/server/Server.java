@@ -32,6 +32,7 @@ public class Server {
     private static final String isUserOwnRecipeCommand = "/ownRecipe";
     private static final String insertRecipeCommand = "/insertRecipe";
     private static final String deleteRecipeCommand = "/deleteRecipe";
+    private static final String changeRecipeCommand = "/changeRecipe";
 
     private static Connection connection = null;
 
@@ -71,9 +72,8 @@ public class Server {
             server.createContext(isUserOwnRecipeCommand, new userOwnRecipeHandler());
             server.createContext(insertRecipeCommand, new insertRecipeHandler());
             server.createContext(deleteRecipeCommand, new deleteRecipeHandler());
+            server.createContext(changeRecipeCommand, new changeRecipeHandler());
 
-
-            // TODO : others contexts
             server.setExecutor(null);
             server.start();
             System.out.println("Server started.");
