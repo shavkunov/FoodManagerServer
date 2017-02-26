@@ -112,9 +112,10 @@ public class InsertRecipeHandler implements HttpHandler {
             for (int i = 0; i < recipe.getIngredients().size(); i++) {
                 double quantity = recipe.getIngredients().get(i).getQuantity();
                 int measureOrdinal = recipe.getIngredients().get(i).getMeasure().ordinal();
+                int ingredientID = ingredientIDs.get(i);
                 String insertRelationQuery = "INSERT INTO Ingredient_to_recipe " +
-                        "(recipe_ID, measure, quantity) VALUES " +
-                        "(" + recipe.getRecipeID() +
+                        "(Ingredient_ID, recipe_ID, measure, quantity) VALUES " +
+                        "(" + ingredientID + ", " + recipe.getRecipeID() +
                         ", " + measureOrdinal + ", " + quantity + ")";
 
                 stmt.executeUpdate(insertRelationQuery);
