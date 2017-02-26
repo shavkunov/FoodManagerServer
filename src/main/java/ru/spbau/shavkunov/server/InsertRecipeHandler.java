@@ -55,8 +55,9 @@ public class InsertRecipeHandler implements HttpHandler {
     private int insertMainInformation() throws SQLException {
         Statement stmt = connection.createStatement();
         String insertRecipeQuery = "INSERT INTO Recipe (name, description) " +
-                                   "VALUES (" + data.getRecipeName() + ", '" + data.getRecipeDescription() + "')";
+                                   "VALUES ('" + data.getRecipeName() + "', '" + data.getRecipeDescription() + "')";
 
+        System.out.println(insertRecipeQuery);
         int res = stmt.executeUpdate(insertRecipeQuery);
         stmt.close();
 
