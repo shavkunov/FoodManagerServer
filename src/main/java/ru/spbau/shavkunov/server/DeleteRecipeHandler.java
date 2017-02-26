@@ -93,8 +93,9 @@ public class DeleteRecipeHandler implements HttpHandler {
             deleteQuery += ids.get(i) + ", ";
         }
         if (ids.size() > 0) {
-            deleteQuery += ids.get(ids.size() - 1) + ")";
+            deleteQuery += ids.get(ids.size() - 1);
         }
+        deleteQuery += ")";
         Statement stmt = connection.createStatement();
         stmt.executeUpdate(deleteQuery);
         stmt.close();
