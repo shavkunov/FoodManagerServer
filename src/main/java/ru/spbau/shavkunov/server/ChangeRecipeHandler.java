@@ -30,7 +30,7 @@ public class ChangeRecipeHandler implements HttpHandler {
             changeRecipeIngredients();
             changeRecipeSteps();
             connection.setAutoCommit(true);
-
+            connection.commit();
             httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 
             System.out.println("Changed user recipe");

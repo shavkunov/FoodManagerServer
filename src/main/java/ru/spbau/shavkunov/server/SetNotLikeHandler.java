@@ -18,6 +18,7 @@ public class SetNotLikeHandler implements HttpHandler {
             int recipeID = input.readInt();
             String userID = (String) input.readObject();
             setNotLike(recipeID, userID);
+
             httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 
             System.out.println("Removed user like");
@@ -32,5 +33,6 @@ public class SetNotLikeHandler implements HttpHandler {
         Statement stmt = connection.createStatement();
         stmt.executeUpdate(removeLikeQuery);
         stmt.close();
+        connection.commit();
     }
 }

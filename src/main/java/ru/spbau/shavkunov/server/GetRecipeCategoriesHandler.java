@@ -31,8 +31,8 @@ public class GetRecipeCategoriesHandler implements HttpHandler {
                 while (categories.next()) {
                     ids.add(categories.getInt("category_ID"));
                 }
-
                 stmt.close();
+
                 httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(httpExchange.getResponseBody())
                 ) {

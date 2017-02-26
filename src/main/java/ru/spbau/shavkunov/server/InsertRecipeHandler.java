@@ -30,6 +30,7 @@ public class InsertRecipeHandler implements HttpHandler {
 
             data = new RecipeInformation(input);
             insertRecipe(data);
+            connection.commit();
             httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 
             System.out.println("Inserted user recipe");

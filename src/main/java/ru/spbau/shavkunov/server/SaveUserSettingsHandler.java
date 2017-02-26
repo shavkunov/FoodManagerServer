@@ -26,7 +26,7 @@ public class SaveUserSettingsHandler implements HttpHandler {
             stmt.executeUpdate(deleteSettingsQuery);
             stmt.executeUpdate(addSettingsQuery);
             stmt.close();
-
+            connection.commit();
             httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 
             System.out.println("Saved user settings");

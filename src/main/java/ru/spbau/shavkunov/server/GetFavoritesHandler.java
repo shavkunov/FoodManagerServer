@@ -30,7 +30,6 @@ public class GetFavoritesHandler implements HttpHandler {
                 favorites.add(GetRecipeHandler.getRecipe(rs.getInt("recipe_ID")));
             }
             stmt.close();
-
             httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
             ObjectOutputStream output = new ObjectOutputStream(httpExchange.getResponseBody());
             output.writeObject(favorites);

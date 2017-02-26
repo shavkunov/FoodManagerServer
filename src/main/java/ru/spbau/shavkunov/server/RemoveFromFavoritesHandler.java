@@ -32,5 +32,6 @@ public class RemoveFromFavoritesHandler implements HttpHandler {
         Statement stmt = connection.createStatement();
         stmt.executeUpdate(removeQuery);
         stmt.close();
+        connection.commit();
     }
 }

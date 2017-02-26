@@ -32,7 +32,7 @@ public class GetRandomDishOfCategoryHandler implements HttpHandler {
             }
             stmt.close();
             Recipe recipe = GetRecipeHandler.getRecipe(recipeID);
-
+            connection.commit();
             httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
             ObjectOutputStream output = new ObjectOutputStream(httpExchange.getResponseBody());
             output.writeObject(recipe);

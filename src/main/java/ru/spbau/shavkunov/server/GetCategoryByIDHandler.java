@@ -28,7 +28,6 @@ public class GetCategoryByIDHandler implements HttpHandler {
                 categoryName = rs.getString("name");
             }
             stmt.close();
-
             httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
             ObjectOutputStream output = new ObjectOutputStream(httpExchange.getResponseBody());
             output.writeObject(categoryName);
