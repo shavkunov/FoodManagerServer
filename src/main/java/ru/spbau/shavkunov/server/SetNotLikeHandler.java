@@ -33,6 +33,5 @@ public class SetNotLikeHandler implements HttpHandler {
         Statement stmt = connection.createStatement();
         stmt.executeUpdate(removeLikeQuery);
         stmt.close();
-        connection.commit();
     }
 }

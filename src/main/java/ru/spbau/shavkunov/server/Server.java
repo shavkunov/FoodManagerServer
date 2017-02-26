@@ -23,6 +23,7 @@ public class Server {
             connection = DriverManager.getConnection("jdbc:sqlite:" + Main.databaseName);
         }
 
+        connection.setAutoCommit(true);
         return connection;
     }
 

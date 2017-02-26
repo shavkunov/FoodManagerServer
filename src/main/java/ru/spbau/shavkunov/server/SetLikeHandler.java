@@ -22,7 +22,6 @@ public class SetLikeHandler implements HttpHandler {
             Statement stmt = connection.createStatement();
             stmt.executeUpdate(setLikeQuery);
             stmt.close();
-            connection.commit();
             httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 
             System.out.println("Set user like");

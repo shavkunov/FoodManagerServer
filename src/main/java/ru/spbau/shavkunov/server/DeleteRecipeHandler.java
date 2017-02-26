@@ -25,7 +25,6 @@ public class DeleteRecipeHandler implements HttpHandler {
             data = new RecipeInformation(input);
             data.setRecipeID(input.readInt());
             deleteRecipe(data);
-            connection.commit();
             httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 
             System.out.println("Deleted user recipe");
