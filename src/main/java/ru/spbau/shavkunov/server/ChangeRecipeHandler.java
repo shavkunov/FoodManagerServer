@@ -23,7 +23,7 @@ public class ChangeRecipeHandler implements HttpHandler {
 
             data = new RecipeInformation(input);
             data.setRecipeID(input.readInt());
-
+            connection = Server.getConnection();
             connection.setAutoCommit(false);
             changeRecipeMainInformation();
             changeRecipeCategories();
