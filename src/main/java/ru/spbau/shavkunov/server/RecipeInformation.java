@@ -12,7 +12,7 @@ public class RecipeInformation {
     private String userID;
     private ArrayList<Ingredient> ingredients;
     private ArrayList<String> stepDescriptions;
-    private ArrayList<byte []> transformedImages;
+    private ArrayList<String> images;
     private int recipeID;
 
     public RecipeInformation(ObjectInputStream input) throws Exception {
@@ -22,7 +22,7 @@ public class RecipeInformation {
         userID = (String) input.readObject();
         ingredients = (ArrayList<Ingredient>) input.readObject();
         stepDescriptions = (ArrayList<String>) input.readObject();
-        transformedImages = (ArrayList<byte[]>) input.readObject();
+        images = (ArrayList<String>) input.readObject();
     }
 
     public void setRecipeName(String recipeName) {
@@ -77,8 +77,8 @@ public class RecipeInformation {
         return stepDescriptions;
     }
 
-    public ArrayList<byte[]> getTransformedImages() {
-        return transformedImages;
+    public ArrayList<String> getTransformedImages() {
+        return images;
     }
 
     public int getRecipeID() {

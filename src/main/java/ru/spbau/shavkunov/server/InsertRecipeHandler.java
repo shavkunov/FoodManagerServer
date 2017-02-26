@@ -1,13 +1,9 @@
 package ru.spbau.shavkunov.server;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import org.cloudinary.json.JSONObject;
 import ru.spbau.mit.foodmanager.Ingredient;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -17,7 +13,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Map;
 
 public class InsertRecipeHandler implements HttpHandler {
     private Connection connection = null;
@@ -148,8 +143,7 @@ public class InsertRecipeHandler implements HttpHandler {
                 String insertRelation = "INSERT INTO Image(entity_type, entity_ID, link) " +
                         "VALUES (?, ?, ?)";
 
-                ByteArrayInputStream bs = new ByteArrayInputStream(recipe.getTransformedImages().get(i));
-                String link = uploadImage(bs);
+                String link = recipe.getTransformedImages().get(i);
                 PreparedStatement preparedStatement = connection.prepareStatement(insertRelation);
                 preparedStatement.setInt(1, 0);
                 preparedStatement.setInt(2, ids.get(i));
@@ -159,13 +153,5 @@ public class InsertRecipeHandler implements HttpHandler {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private String uploadImage(InputStream imageIn) throws Exception {
-        Cloudinary cloudinary = new Cloudinary(Server.CLOUDINARY_URL);
-        Map result = cloudinary.uploader().upload(imageIn, ObjectUtils.emptyMap());
-        JSONObject jsonObject = new JSONObject(result);
-
-        return jsonObject.getString("url");
     }
 }
