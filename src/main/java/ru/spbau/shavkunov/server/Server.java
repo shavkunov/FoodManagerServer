@@ -51,28 +51,28 @@ public class Server {
     public void start() {
         try {
             final HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
-            server.createContext(getRecipeCommand, new getRecipeHandler());
-            server.createContext(getRecipeCategoriesCommand, new getRecipeCategoriesHangler());
-            server.createContext(getRecipeIngredientsCommand, new getRecipeIngredientsHandler());
-            server.createContext(getRecipeStepsCommand, new getRecipeStepsHandler());
-            server.createContext(getRecipesByFilterCommand, new getRecipesByFilterHandler());
-            server.createContext(getUserSettingsCommand, new getUserSettingsHandler());
-            server.createContext(getUserLikeCommand, new getUserLikeHandler());
-            server.createContext(getRecipeLikesCommand, new getRecipeLikesHandler());
-            server.createContext(setUserLikeCommand, new setLikeHandler());
-            server.createContext(setUserNotLikeCommand, new setNotLikeHandler());
-            server.createContext(addToFavoritesCommand, new addToFavoritesHandler());
-            server.createContext(removeFromFavoritesCommand, new removeFromFavoritesHandler());
+            server.createContext(getRecipeCommand, new GetRecipeHandler());
+            server.createContext(getRecipeCategoriesCommand, new GetRecipeCategoriesHandler());
+            server.createContext(getRecipeIngredientsCommand, new GetRecipeIngredientsHandler());
+            server.createContext(getRecipeStepsCommand, new GetRecipeStepsHandler());
+            server.createContext(getRecipesByFilterCommand, new GetRecipesByFilterHandler());
+            server.createContext(getUserSettingsCommand, new GetUserSettingsHandler());
+            server.createContext(getUserLikeCommand, new GetUserLikeHandler());
+            server.createContext(getRecipeLikesCommand, new GetRecipeLikesHandler());
+            server.createContext(setUserLikeCommand, new SetLikeHandler());
+            server.createContext(setUserNotLikeCommand, new SetNotLikeHandler());
+            server.createContext(addToFavoritesCommand, new AddToFavoritesHandler());
+            server.createContext(removeFromFavoritesCommand, new RemoveFromFavoritesHandler());
             server.createContext(getFavoritesCommand, new getFavoritesHandler());
             server.createContext(getRecipesOfCategoryCommand, new getRecipesOfCategoryHandler());
-            server.createContext(getCategoryByIDCommand, new getCategoryByIDHandler());
-            server.createContext(getCategoriesListCommand, new getCategoryListHandler());
-            server.createContext(saveUserSettingsCommand, new saveUserSettingsHandler());
+            server.createContext(getCategoryByIDCommand, new GetCategoryByIDHandler());
+            server.createContext(getCategoriesListCommand, new GetCategoryListHandler());
+            server.createContext(saveUserSettingsCommand, new SaveUserSettingsHandler());
             server.createContext(getRandomDishCommand, new getRandomDishOfCategoryHandler());
-            server.createContext(isUserOwnRecipeCommand, new userOwnRecipeHandler());
-            server.createContext(insertRecipeCommand, new insertRecipeHandler());
-            server.createContext(deleteRecipeCommand, new deleteRecipeHandler());
-            server.createContext(changeRecipeCommand, new changeRecipeHandler());
+            server.createContext(isUserOwnRecipeCommand, new UserOwnRecipeHandler());
+            server.createContext(insertRecipeCommand, new InsertRecipeHandler());
+            server.createContext(deleteRecipeCommand, new DeleteRecipeHandler());
+            server.createContext(changeRecipeCommand, new ChangeRecipeHandler());
 
             server.setExecutor(null);
             server.start();

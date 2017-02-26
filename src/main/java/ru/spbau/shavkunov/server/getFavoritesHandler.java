@@ -27,7 +27,7 @@ public class getFavoritesHandler implements HttpHandler {
             ResultSet rs = stmt.executeQuery(favoritesQuery);
             ArrayList<Recipe> favorites = new ArrayList<>();
             while (rs.next()) {
-                favorites.add(getRecipeHandler.getRecipe(rs.getInt("recipe_ID")));
+                favorites.add(GetRecipeHandler.getRecipe(rs.getInt("recipe_ID")));
             }
             stmt.close();
 

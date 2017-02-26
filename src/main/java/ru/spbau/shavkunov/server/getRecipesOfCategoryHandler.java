@@ -28,7 +28,7 @@ public class getRecipesOfCategoryHandler implements HttpHandler {
             ResultSet rs = stmt.executeQuery(categoryQuery);
             ArrayList<Recipe> recipes = new ArrayList<>();
             while (rs.next()) {
-                recipes.add(getRecipeHandler.getRecipe(rs.getInt("recipe_ID")));
+                recipes.add(GetRecipeHandler.getRecipe(rs.getInt("recipe_ID")));
             }
             stmt.close();
 

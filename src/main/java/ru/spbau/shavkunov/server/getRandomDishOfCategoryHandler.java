@@ -31,7 +31,7 @@ public class getRandomDishOfCategoryHandler implements HttpHandler {
                 recipeID = rs.getInt("recipe_ID");
             }
             stmt.close();
-            Recipe recipe = getRecipeHandler.getRecipe(recipeID);
+            Recipe recipe = GetRecipeHandler.getRecipe(recipeID);
 
             httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
             ObjectOutputStream output = new ObjectOutputStream(httpExchange.getResponseBody());
