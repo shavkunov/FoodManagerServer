@@ -113,7 +113,7 @@ public class DeleteRecipeHandler implements HttpHandler {
     }
 
     public void deleteRecipeIngredients(RecipeInformation recipe) throws Exception {
-        ArrayList<Integer> ids = getRecipeIngredientIDs();
+        ArrayList<Integer> ids = getRecipeIngredientIDs(recipe);
         deleteIngredientToRecipeRelation(recipe);
         deleteRecipeIngredientsFromIngredient(ids);
     }
@@ -139,9 +139,9 @@ public class DeleteRecipeHandler implements HttpHandler {
         return ids;
     }
 
-    private ArrayList<Integer> getRecipeIngredientIDs() throws Exception {
+    private ArrayList<Integer> getRecipeIngredientIDs(RecipeInformation recipe) throws Exception {
         String selectIngredientQuery = "SELECT Ingredient_ID FROM Ingredient_to_recipe " +
-                "WHERE recipe_ID = " + data.getRecipeID();
+                "WHERE recipe_ID = " + recipe.getRecipeID();
 
         ArrayList<Integer> ids = new ArrayList<>();
         connection = Server.getConnection();

@@ -7,6 +7,7 @@ import ru.spbau.mit.foodmanager.Ingredient;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -35,6 +36,10 @@ public class InsertRecipeHandler implements HttpHandler {
             insertRecipe(data);
             httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 
+            ObjectOutputStream output = new ObjectOutputStream(httpExchange.getResponseBody());
+            output.writeInt(data.getRecipeID());
+            output.flush();
+            output.close();
             System.out.println("Inserted user recipe");
         } catch (Exception e) {
             e.printStackTrace();

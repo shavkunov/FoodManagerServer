@@ -38,7 +38,7 @@ public class ChangeRecipeHandler implements HttpHandler {
         }
     }
 
-    private void changeRecipeSteps() throws SQLException {
+    private void changeRecipeSteps() throws Exception {
         DeleteRecipeHandler deleteHandler = new DeleteRecipeHandler();
         InsertRecipeHandler insertHandler = new InsertRecipeHandler();
         ArrayList<Integer> recipeIDs = deleteHandler.getRecipeStepIDs(data);
@@ -48,7 +48,7 @@ public class ChangeRecipeHandler implements HttpHandler {
         insertHandler.insertRecipeImageStepRelation(stepIDs, data);
     }
 
-    private void changeRecipeIngredients() throws SQLException {
+    private void changeRecipeIngredients() throws Exception {
         DeleteRecipeHandler deleteHandler = new DeleteRecipeHandler();
         InsertRecipeHandler insertHandler = new InsertRecipeHandler();
         deleteHandler.deleteRecipeIngredients(data);
