@@ -112,7 +112,7 @@ public class DeleteRecipeHandler implements HttpHandler {
         stmt.close();
     }
 
-    public void deleteRecipeIngredients(RecipeInformation recipe) throws SQLException {
+    public void deleteRecipeIngredients(RecipeInformation recipe) throws Exception {
         ArrayList<Integer> ids = getRecipeIngredientIDs();
         deleteIngredientToRecipeRelation(recipe);
         deleteRecipeIngredientsFromIngredient(ids);
@@ -126,9 +126,10 @@ public class DeleteRecipeHandler implements HttpHandler {
         stmt.executeUpdate(deletePreviousCategoriesQuery);
     }
 
-    public ArrayList<Integer> getRecipeStepIDs(RecipeInformation recipe) throws SQLException {
+    public ArrayList<Integer> getRecipeStepIDs(RecipeInformation recipe) throws Exception {
         ArrayList<Integer> ids = new ArrayList<>();
         String getStepsQuery = "SELECT ID FROM Step WHERE recipe_ID = " + recipe.getRecipeID();
+        connection = Server.getConnection();
         Statement stmt = connection.createStatement();
         ResultSet rs = stmt.executeQuery(getStepsQuery);
         while (rs.next()) {
@@ -138,11 +139,12 @@ public class DeleteRecipeHandler implements HttpHandler {
         return ids;
     }
 
-    private ArrayList<Integer> getRecipeIngredientIDs() throws SQLException {
+    private ArrayList<Integer> getRecipeIngredientIDs() throws Exception {
         String selectIngredientQuery = "SELECT Ingredient_ID FROM Ingredient_to_recipe " +
                 "WHERE recipe_ID = " + data.getRecipeID();
 
         ArrayList<Integer> ids = new ArrayList<>();
+        connection = Server.getConnection();
         Statement stmt = connection.createStatement();
         ResultSet rs = stmt.executeQuery(selectIngredientQuery);
         while (rs.next()) {
